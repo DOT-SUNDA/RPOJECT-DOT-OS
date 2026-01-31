@@ -1,5 +1,5 @@
-<img src="image.png" width="70%" alt="DOT-AJA Banner">
 <div align="center">
+<img src="image.png" width="100%" alt="DOT-AJA Banner">
 
 [![Release](https://img.shields.io/badge/release-STABLE-brightgreen?style=for-the-badge&logo=linux)](https://github.com/)
 [![Size](https://img.shields.io/badge/size-ULTRA%20LITE-blueviolet?style=for-the-badge)](https://github.com/)
