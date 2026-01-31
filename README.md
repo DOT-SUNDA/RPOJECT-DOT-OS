@@ -1,5 +1,3 @@
-<div align="center">
-
 ```text
 ██████╗  ██████╗ ████████╗      █████╗      ██╗ █████╗
 ██╔══██╗██╔═══██╗╚══██╔══╝     ██╔══██╗     ██║██╔══██╗
@@ -9,6 +7,7 @@
 ╚═════╝  ╚═════╝    ╚═╝        ╚═╝  ╚═╝ ╚════╝ ╚═╝  ╚═╝                                  
                    CUSTOM OS // AUTOMATION // SCRIPTING
 ```
+div align="center">
 
 [![Release](https://img.shields.io/badge/release-STABLE-brightgreen?style=for-the-badge&logo=linux)](https://github.com/)
 [![Size](https://img.shields.io/badge/size-ULTRA%20LITE-blueviolet?style=for-the-badge)](https://github.com/)
@@ -29,7 +28,7 @@
 **DOT AJA** is a specialized project focused on creating the most lightweight and efficient Linux environment possible. Whether you are running high-frequency trading bots, selenium automation, or managing a fleet of VPS instances, this OS provides the bare metal performance you need without the bloat.
 
 ### Why DOT AJA?
-* **Minimal Overhead:** Idle RAM usage optimized to `<300MB`.
+* **Minimal Overhead:** Idle RAM usage optimized to `<100MB`.
 * **Developer Ready:** Pre-packed with Python, Git, and Network Tools.
 * **Remote Access:** Custom RDP configuration for seamless GUI access.
 
