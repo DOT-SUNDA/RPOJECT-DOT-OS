@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Link</title>
+    <title>Auto Link Checker</title>
     <style>
         :root {
-            --primary: #4f46e5; /* Indigo Modern */
-            --primary-hover: #4338ca;
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
+            --primary: #2563eb; /* Biru Link */
+            --clicked-bg: #fef08a; /* Kuning Background */
+            --clicked-border: #eab308; /* Kuning Border */
+            --clicked-text: #854d0e; /* Kuning Gelap Text */
             --bg-color: #f3f4f6;
             --card-bg: #ffffff;
             --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
@@ -30,7 +29,7 @@
 
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             background: var(--card-bg);
             padding: 2rem;
             border-radius: 16px;
@@ -38,75 +37,289 @@
             height: fit-content;
         }
 
-        /* HEADER & JUDUL */
         h1 {
             text-align: center;
-            color: var(--primary);
+            color: var(--text-main);
             margin-top: 0;
-            font-size: 2rem;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.5rem;
-        }
-
-        #status {
-            text-align: center;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            background: #eef2ff;
-            padding: 8px;
-            border-radius: 8px;
-            display: inline-block;
-            width: 100%;
-            box-sizing: border-box;
         }
 
         /* INPUT AREA */
-        .input-group {
-            margin-bottom: 2rem;
-        }
-
         textarea {
             width: 100%;
-            height: 120px;
-            padding: 15px;
+            height: 100px;
+            padding: 12px;
             box-sizing: border-box;
             border: 2px solid #e5e7eb;
-            border-radius: 12px;
+            border-radius: 8px;
             font-family: monospace;
-            font-size: 0.9rem;
             resize: vertical;
-            transition: all 0.3s ease;
-            outline: none;
-            background-color: #f9fafb;
+            margin-bottom: 10px;
         }
 
-        textarea:focus {
-            border-color: var(--primary);
-            background-color: #fff;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .btn-wrapper {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
+        .btn-wrapper { display: flex; gap: 10px; margin-bottom: 20px; }
+        
         button {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            font-size: 0.95rem;
+            transition: 0.2s;
         }
 
-        button:active {
-            transform: scale(0.98);
+        .btn-save { background-color: var(--primary); color: white; }
+        .btn-save:hover { background-color: #1d4ed8; }
+        
+        .btn-reset { background-color: #fff; border: 2px solid #ef4444; color: #ef4444; }
+        .btn-reset:hover { background-color: #fef2f2; }
+
+        .btn-clear-status { background-color: #fff; border: 2px solid #f59e0b; color: #f59e0b; }
+        .btn-clear-status:hover { background-color: #fffbeb; }
+
+        hr { border: 0; border-top: 1px solid #e5e7eb; margin: 1.5rem 0; }
+
+        /* LIST STYLE */
+        ol {
+            padding: 0;
+            list-style: none;
+            counter-reset: link-counter;
         }
+
+        li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 12px;
+        }
+
+        /* Checkbox Styling */
+        .check-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #ef4444; /* Warna centang merah agar mencolok */
+        }
+
+        /* Link Styling */
+        li a {
+            flex-grow: 1;
+            display: block;
+            padding: 14px 14px 14px 40px; /* Space for number */
+            background: white;
+            border: 1px solid #bfdbfe; /* Border biru tipis */
+            border-left: 4px solid var(--primary); /* Indikator biru */
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--primary); /* Warna Biru */
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+            word-break: break-all;
+        }
+
+        /* Custom Numbering inside the link box */
+        li a::before {
+            counter-increment: link-counter;
+            content: counter(link-counter);
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #9ca3af;
+        }
+
+        /* HOVER STATE */
+        li a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* STATE: SUDAH DI KLIK (KUNING) */
+        li a.visited-state {
+            background-color: var(--clicked-bg) !important;
+            color: var(--clicked-text) !important;
+            border-color: var(--clicked-border) !important;
+            border-left-color: var(--clicked-border) !important;
+        }
+
+        /* STATE: DICENTANG (Untuk Review) */
+        li.checked-row a {
+            border-style: dashed; /* Link putus-putus jika dicentang */
+            opacity: 0.8;
+        }
+
+        .empty-state { text-align: center; color: #6b7280; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Link Checker</h1>
+    
+    <textarea id="textInput" placeholder="Tempel link di sini (satu per baris)..."></textarea>
+    
+    <div class="btn-wrapper">
+        <button class="btn-save" onclick="processData()">Simpan & Generate</button>
+        <button class="btn-clear-status" onclick="resetStatusOnly()">Reset Warna & Centang</button>
+        <button class="btn-reset" onclick="clearAll()">Hapus Semua</button>
+    </div>
+
+    <div style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">
+        <span style="display:inline-block; width:12px; height:12px; background:#2563eb; margin-right:5px;"></span>Belum Klik
+        <span style="display:inline-block; width:12px; height:12px; background:#fef08a; border:1px solid #eab308; margin-left:15px; margin-right:5px;"></span>Sudah Klik
+        <span style="display:inline-block; margin-left:15px;">☑️ Perlu Cek Ulang</span>
+    </div>
+
+    <hr>
+    
+    <ol id="link-list"></ol>
+</div>
+
+<script>
+    const listContainer = document.getElementById('link-list');
+    const textInput = document.getElementById('textInput');
+    const STORAGE_TEXT = 'autolink_text_v2'; 
+    const STORAGE_STATE = 'autolink_state_v2';
+
+    // State object structure: { "url_string": { clicked: boolean, checked: boolean } }
+    let linkStates = {};
+
+    function loadData() {
+        const savedText = localStorage.getItem(STORAGE_TEXT);
+        const savedState = localStorage.getItem(STORAGE_STATE);
+
+        if (savedState) {
+            linkStates = JSON.parse(savedState);
+        }
+
+        if (savedText) {
+            textInput.value = savedText;
+            renderLinks(savedText);
+        } else {
+            renderLinks("");
+        }
+    }
+
+    function processData() {
+        const content = textInput.value;
+        localStorage.setItem(STORAGE_TEXT, content);
+        
+        // Bersihkan state jika URL dihapus dari text area? 
+        // Untuk simpelnya, kita keep state yang ada, cuma tambah yang baru.
+        renderLinks(content);
+    }
+
+    function renderLinks(text) {
+        listContainer.innerHTML = '';
+        const lines = text.split('\n').filter(line => line.trim() !== '');
+
+        if (lines.length === 0) {
+            listContainer.innerHTML = '<div class="empty-state">Data kosong.</div>';
+            return;
+        }
+
+        lines.forEach((url, index) => {
+            const cleanUrl = url.trim();
+            const uniqueKey = cleanUrl + '_' + index; // Kunci unik handle duplikat URL
+
+            // Inisialisasi state jika belum ada
+            if (!linkStates[uniqueKey]) {
+                linkStates[uniqueKey] = { clicked: false, checked: false };
+            }
+
+            const li = document.createElement('li');
+            
+            // 1. Checkbox Area
+            const checkWrapper = document.createElement('div');
+            checkWrapper.className = 'check-wrapper';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.title = "Tandai untuk dicek ulang";
+            checkbox.checked = linkStates[uniqueKey].checked;
+            
+            checkbox.addEventListener('change', () => {
+                linkStates[uniqueKey].checked = checkbox.checked;
+                saveState();
+                if(checkbox.checked) {
+                    li.classList.add('checked-row');
+                } else {
+                    li.classList.remove('checked-row');
+                }
+            });
+
+            checkWrapper.appendChild(checkbox);
+
+            // 2. Link Area
+            const a = document.createElement('a');
+            let hrefUrl = cleanUrl;
+            if (!hrefUrl.startsWith('http://') && !hrefUrl.startsWith('https://')) {
+                hrefUrl = 'http://' + hrefUrl;
+            }
+            a.href = hrefUrl;
+            a.target = "_blank";
+            a.textContent = cleanUrl;
+
+            // Apply style jika statusnya sudah diklik
+            if (linkStates[uniqueKey].clicked) {
+                a.classList.add('visited-state');
+            }
+            
+            // Apply style jika dicentang
+            if (linkStates[uniqueKey].checked) {
+                li.classList.add('checked-row');
+            }
+
+            // Event saat link diklik
+            a.addEventListener('click', () => {
+                a.classList.add('visited-state'); // Ubah jadi kuning
+                linkStates[uniqueKey].clicked = true;
+                saveState();
+            });
+
+            li.appendChild(checkWrapper);
+            li.appendChild(a);
+            listContainer.appendChild(li);
+        });
+    }
+
+    function saveState() {
+        localStorage.setItem(STORAGE_STATE, JSON.stringify(linkStates));
+    }
+
+    function resetStatusOnly() {
+        if (confirm("Reset warna kuning dan centang? (Link tidak dihapus)")) {
+            linkStates = {};
+            localStorage.removeItem(STORAGE_STATE);
+            renderLinks(textInput.value); // Re-render ulang tampilan
+        }
+    }
+
+    function clearAll() {
+        if (confirm("Hapus semua data input dan status?")) {
+            localStorage.removeItem(STORAGE_TEXT);
+            localStorage.removeItem(STORAGE_STATE);
+            textInput.value = "";
+            linkStates = {};
+            renderLinks("");
+        }
+    }
+
+    // Load saat halaman dibuka
+    window.onload = loadData;
+</script>
+
+</body>
+</html>        }
 
         .btn-save {
             background-color: var(--primary);
